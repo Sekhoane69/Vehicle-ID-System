@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.*?>
+
+<VBox fx:id="dashboardRoot" spacing="0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.vis.controller.Home"
+      styleClass="module-root">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="module-header">
+        <padding><Insets left="24" right="24" top="18" bottom="18"/></padding>
+        <VBox spacing="4">
+            <Label fx:id="welcomeLabel" styleClass="module-title" text="Welcome!"/>
+            <Label fx:id="subtitleLabel" text="System Overview — Real-time analytics" styleClass="module-subtitle"/>
+        </VBox>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <ProgressIndicator fx:id="overallIndicator" prefWidth="36" prefHeight="36"/>
+    </HBox>
+
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="scroll-pane-clean" VBox.vgrow="ALWAYS">
+        <VBox spacing="20" styleClass="module-content">
+            <padding><Insets top="24" bottom="24" left="24" right="24"/></padding>
+
+            <!-- Stat Cards -->
+            <HBox spacing="16">
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Total Cars" styleClass="stat-label"/>
+                    <Label fx:id="totalCarsLabel" text="—" styleClass="stat-value"/>
+                </VBox>
+                <VBox fx:id="ClientsCard" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Clients" styleClass="stat-label"/>
+                    <Label fx:id="totalClientsLabel" text="—" styleClass="stat-value"/>
+                </VBox>
+                <VBox fx:id="servicesCard" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Service Records" styleClass="stat-label"/>
+                    <Label fx:id="totalServicesLabel" text="—" styleClass="stat-value"/>
+                </VBox>
+                <VBox fx:id="TicketsCard" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Tickets" styleClass="stat-label"/>
+                    <Label fx:id="totalTicketsLabel" text="—" styleClass="stat-value"/>
+                </VBox>
+            </HBox>
+
+            <VBox fx:id="adminChartsContainer" spacing="20">
+            <!-- Progress Bars -->
+            <HBox spacing="20">
+                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Car Capacity Utilisation" styleClass="field-label"/>
+                    <ProgressBar fx:id="CarProgress" maxWidth="Infinity" progress="0" styleClass="progress-bar-modern"/>
+                </VBox>
+                <VBox fx:id="serviceProgressBox" spacing="6" HBox.hgrow="ALWAYS">
+                    <Label text="Service Records Logged" styleClass="field-label"/>
+                    <ProgressBar fx:id="serviceProgress" maxWidth="Infinity" progress="0" styleClass="progress-bar-modern"/>
+                </VBox>
+            </HBox>
+
+            <!-- Charts Row 1 -->
+            <HBox spacing="20">
+                <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                    <Label text="Cars by Make" styleClass="chart-title"/>
+                    <BarChart fx:id="CarsByMakeChart" prefHeight="260" animated="true">
+                        <xAxis><CategoryAxis label="Make"/></xAxis>
+                        <yAxis><NumberAxis label="Count"/></yAxis>
+                    </BarChart>
+                </VBox>
+                <VBox fx:id="reportsCard" styleClass="chart-card" HBox.hgrow="ALWAYS">
+                    <Label text="Police Reports by Type" styleClass="chart-title"/>
+                    <PieChart fx:id="reportTypePieChart" prefHeight="260" animated="true" labelsVisible="true"/>
+                </VBox>
+            </HBox>
+
+            <!-- Charts Row 2 -->
+            <HBox spacing="20">
+                <VBox fx:id="serviceCostChartBox" styleClass="chart-card" HBox.hgrow="ALWAYS">
+                    <Label text="Monthly Service Cost ($)" styleClass="chart-title"/>
+                    <LineChart fx:id="serviceCostChart" prefHeight="260" animated="true" createSymbols="true">
+                        <xAxis><CategoryAxis label="Month"/></xAxis>
+                        <yAxis><NumberAxis label="Cost ($)"/></yAxis>
+                    </LineChart>
+                </VBox>
+                <VBox fx:id="TicketsChartBox" styleClass="chart-card" HBox.hgrow="ALWAYS">
+                    <Label text="Ticket Fines by Type ($)" styleClass="chart-title"/>
+                    <BarChart fx:id="TicketsFineChart" prefHeight="260" animated="true">
+                        <xAxis><CategoryAxis label="Type"/></xAxis>
+                        <yAxis><NumberAxis label="Fine ($)"/></yAxis>
+                    </BarChart>
+                </VBox>
+            </HBox>
+            </VBox>
+
+            <!-- Client Lists -->
+            <VBox fx:id="ClientListsContainer" spacing="20" managed="false" visible="false">
+                <HBox spacing="20">
+                    <VBox styleClass="form-card" HBox.hgrow="ALWAYS">
+                        <Label text="My Service Records" styleClass="section-title"/>
+                        <ListView fx:id="ClientServicesListView" prefHeight="200" styleClass="list-view-modern"/>
+                    </VBox>
+                    <VBox styleClass="form-card" HBox.hgrow="ALWAYS">
+                        <Label text="My Tickets" styleClass="section-title"/>
+                        <ListView fx:id="ClientTicketsListView" prefHeight="200" styleClass="list-view-modern"/>
+                        <Button text="💳 Pay Selected Ticket" styleClass="btn-primary" onAction="#handlePayTicket" maxWidth="Infinity" style="-fx-margin-top: 10;"/>
+                    </VBox>
+                </HBox>
+                <VBox styleClass="form-card">
+                    <Label text="Police Alerts &amp; Feedback" styleClass="section-title"/>
+                    <ListView fx:id="policeAlertsListView" prefHeight="180" styleClass="list-view-modern"/>
+                </VBox>
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+</VBox>

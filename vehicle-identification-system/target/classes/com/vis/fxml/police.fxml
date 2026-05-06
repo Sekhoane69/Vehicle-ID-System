@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.*?>
+
+<VBox fx:id="policeRoot" spacing="0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.vis.controller.Police"
+      styleClass="module-root">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="police-header">
+        <padding><Insets left="24" right="24" top="24" bottom="24"/></padding>
+        <VBox spacing="4">
+            <Label text="🚔 Police Enforcement" styleClass="module-title"/>
+            <Label text="Car surveillance, reports, and national enforcement registry" styleClass="module-subtitle"/>
+        </VBox>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <ProgressBar fx:id="loadProgress" prefWidth="160" prefHeight="8"/>
+    </HBox>
+
+    <Label fx:id="statusLabel" styleClass="status-label" visible="false">
+        <padding><Insets left="24" top="4" bottom="4"/></padding>
+    </Label>
+
+    <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean" VBox.vgrow="ALWAYS">
+        <VBox spacing="16" styleClass="module-content">
+            <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+
+            <!-- Stats/Overview Section (Visible on StartApp Landing) -->
+            <VBox fx:id="statsSection" spacing="16">
+                <!-- Stat Cards -->
+                <HBox spacing="16">
+                    <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                        <Label text="Total Reports" styleClass="stat-label"/>
+                        <Label fx:id="totalReportsLabel" text="0" styleClass="stat-value"/>
+                        <Label text="All incidents filed" styleClass="stat-desc"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" HBox.hgrow="ALWAYS" style="-fx-border-color: #f59e0b;">
+                        <Label text="Active Tickets" styleClass="stat-label"/>
+                        <Label fx:id="activeTicketsLabel" text="0" styleClass="stat-value"/>
+                        <Label text="Unpaid tickets" styleClass="stat-desc"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" HBox.hgrow="ALWAYS" style="-fx-border-color: #ef4444;">
+                        <Label text="Total Fines" styleClass="stat-label"/>
+                        <Label fx:id="totalFinesLabel" text="R 0.00" styleClass="stat-value"/>
+                        <Label text="Cumulative penalty" styleClass="stat-desc"/>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="16">
+                    <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                        <Label text="Reports by Type" styleClass="chart-title"/>
+                        <PieChart fx:id="reportTypePieChart" prefHeight="260" animated="true" labelsVisible="true"/>
+                    </VBox>
+                    <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                        <Label text="Total Fines by Ticket Type (R)" styleClass="chart-title"/>
+                        <BarChart fx:id="finesBarChart" prefHeight="260" animated="true">
+                            <xAxis><CategoryAxis label="Type"/></xAxis>
+                            <yAxis><NumberAxis label="Fine (R)"/></yAxis>
+                        </BarChart>
+                    </VBox>
+                    <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                        <Label text="Ticket Payment Status" styleClass="chart-title"/>
+                        <PieChart fx:id="TicketStatusPie" prefHeight="260" animated="true" labelsVisible="true"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+            <!-- Search Section -->
+            <VBox fx:id="searchSection" spacing="16">
+                <VBox styleClass="search-box-modern" spacing="12">
+                    <Label text="🔍 Quick Car Registry Search" styleClass="section-title"/>
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <TextField fx:id="searchRegField" promptText="Enter Registration (e.g. ABC 123 GP)" HBox.hgrow="ALWAYS" styleClass="text-field-modern" prefHeight="45"/>
+                        <Button text="🔍 Search Database" styleClass="btn-primary" onAction="#handleCarSearch" prefHeight="45" prefWidth="180"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Search Results -->
+                <VBox fx:id="searchResultBox" managed="false" visible="false" spacing="16">
+                    <VBox styleClass="form-card" spacing="12">
+                        <Label text="Car &amp; Owner Information" styleClass="section-title"/>
+                        <HBox spacing="20">
+                            <VBox spacing="12" HBox.hgrow="ALWAYS">
+                                <Label text="🛡️ Car DETAILS" styleClass="info-card-title"/>
+                                <GridPane hgap="20" vgap="12">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="120" prefWidth="120"/>
+                                        <ColumnConstraints hgrow="ALWAYS"/>
+                                    </columnConstraints>
+                                    <Label text="Registration:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="field-label"/>
+                                    <Label fx:id="resReg" text="—" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="police-result-label"/>
+                                    <Label text="Make / Model:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="field-label"/>
+                                    <Label fx:id="resMakeModel" text="—" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="police-result-value"/>
+                                    <Label text="Year / Color:" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="field-label"/>
+                                    <Label fx:id="resYearColor" text="—" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="police-result-value"/>
+                                    <Label text="System Status:" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="field-label"/>
+                                    <HBox spacing="12" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                        <Label fx:id="resStatus" text="—" styleClass="status-badge"/>
+                                        <ComboBox fx:id="updateStatusCombo" promptText="Change Status" styleClass="combo-modern" prefWidth="130"/>
+                                        <Button text="Update" styleClass="btn-primary" onAction="#handleUpdateCarStatus" scaleX="0.9" scaleY="0.9"/>
+                                    </HBox>
+                                </GridPane>
+                            </VBox>
+                            <Separator orientation="VERTICAL" style="-fx-opacity: 0.5;"/>
+                            <VBox spacing="12" HBox.hgrow="ALWAYS">
+                                <Label text="👤 OWNER DETAILS" styleClass="info-card-title"/>
+                                <GridPane hgap="20" vgap="12">
+                                    <columnConstraints>
+                                        <ColumnConstraints minWidth="100" prefWidth="100"/>
+                                        <ColumnConstraints hgrow="ALWAYS"/>
+                                    </columnConstraints>
+                                    <Label text="Owner Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="field-label"/>
+                                    <Label fx:id="resOwnerName" text="—" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="police-result-value"/>
+                                    <Label text="Phone:" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="field-label"/>
+                                    <Label fx:id="resOwnerPhone" text="—" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                    <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="field-label"/>
+                                    <Label fx:id="resOwnerEmail" text="—" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                </GridPane>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <HBox spacing="16">
+                        <VBox styleClass="form-card" spacing="10" HBox.hgrow="ALWAYS">
+                            <Label text="Car Tickets" styleClass="section-title"/>
+                            <ListView fx:id="resTicketsList" prefHeight="200" styleClass="list-view-modern"/>
+                        </VBox>
+                        <VBox styleClass="form-card" spacing="10" HBox.hgrow="ALWAYS">
+                            <Label text="Police Reports" styleClass="section-title"/>
+                            <ListView fx:id="resReportsList" prefHeight="200" styleClass="list-view-modern"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- Not Found State -->
+                <VBox fx:id="notFoundBox" managed="false" visible="false" styleClass="form-card" alignment="CENTER" spacing="10">
+                    <Label text="⚠ Car NOT REGISTERED" styleClass="section-title" style="-fx-text-fill: #dc2626;"/>
+                    <Label text="This registration number was not found in the national Car database." styleClass="module-subtitle"/>
+                    <Button text="📄 File Unregistered Car Report" styleClass="btn-danger" onAction="#handleFileUnregisteredReport"/>
+                </VBox>
+            </VBox>
+
+            <!-- Report Section -->
+            <VBox fx:id="reportSection" spacing="16">
+                <VBox styleClass="form-card" spacing="12">
+                    <Label text="File a Police Report" styleClass="section-title"/>
+                    <HBox spacing="12">
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Car" styleClass="field-label"/>
+                            <ComboBox fx:id="CarCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Select Car"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Report Type" styleClass="field-label"/>
+                            <ComboBox fx:id="reportTypeCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Type"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Report Date" styleClass="field-label"/>
+                            <DatePicker fx:id="reportDatePicker" maxWidth="Infinity" styleClass="date-picker-modern"/>
+                        </VBox>
+                    </HBox>
+                    <Label text="Description / Incident Details" styleClass="field-label"/>
+                    <TextArea fx:id="reportDescArea" promptText="Full incident description..." prefHeight="90" styleClass="text-area-modern"/>
+                    <HBox spacing="12">
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Officer Name" styleClass="field-label"/>
+                            <TextField fx:id="officerNameField" promptText="Officer Full Name" styleClass="text-field-modern"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Badge Number" styleClass="field-label"/>
+                            <TextField fx:id="badgeField" promptText="P-1234" styleClass="text-field-modern"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Status" styleClass="field-label"/>
+                            <ComboBox fx:id="reportStatusCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Status"/>
+                        </VBox>
+                    </HBox>
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <CheckBox fx:id="notifyOwnerCheckbox" text="Notify Car owner of this report/update" styleClass="checkbox-modern" selected="true"/>
+                    </HBox>
+                    <Button fx:id="saveReportBtn" text="📋 File Report" maxWidth="Infinity" styleClass="btn-primary" onAction="#handleSaveReport"/>
+                </VBox>
+
+                <!-- All Police Reports Table -->
+                <VBox styleClass="form-card" spacing="10">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="All Police Reports" styleClass="section-title" HBox.hgrow="ALWAYS"/>
+                        <Button text="✅ Mark Selected as CLOSED" styleClass="btn-primary" onAction="#handleCloseReport" scaleX="0.9" scaleY="0.9"/>
+                    </HBox>
+                    <TableView fx:id="reportsTable" prefHeight="340" styleClass="table-modern">
+                        <columns>
+                            <TableColumn fx:id="rpIdCol"     text="ID"       prefWidth="50"/>
+                            <TableColumn fx:id="rpRegCol"    text="Car"  prefWidth="130"/>
+                            <TableColumn fx:id="rpTypeCol"   text="Type"     prefWidth="110"/>
+                            <TableColumn fx:id="rpDateCol"   text="Date"     prefWidth="100"/>
+                            <TableColumn fx:id="rpOfficerCol" text="Officer" prefWidth="140"/>
+                            <TableColumn fx:id="rpBadgeCol"  text="Badge"   prefWidth="80"/>
+                            <TableColumn fx:id="rpStatusCol" text="Status"  prefWidth="90"/>
+                            <TableColumn fx:id="rpDescCol"   text="Description" prefWidth="200"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </VBox>
+
+            <!-- Ticket Section -->
+            <VBox fx:id="TicketSection" spacing="16">
+                <VBox styleClass="form-card" spacing="12">
+                    <Label text="Issue Ticket Ticket" styleClass="section-title"/>
+                    <HBox spacing="12">
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Car" styleClass="field-label"/>
+                            <ComboBox fx:id="vCarCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Select Car"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Ticket Type" styleClass="field-label"/>
+                            <ComboBox fx:id="TicketTypeCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Select type"/>
+                        </VBox>
+                    </HBox>
+                    <VBox fx:id="customTypeBox" managed="false" visible="false" spacing="4">
+                        <Label text="Specify Ticket" styleClass="field-label"/>
+                        <TextField fx:id="TicketTypeField" promptText="e.g. Cracked windshield" styleClass="text-field-modern"/>
+                    </VBox>
+                    <Label text="Ticket Description" styleClass="field-label"/>
+                    <TextArea fx:id="TicketDescArea" promptText="Describe the Ticket..." prefHeight="80" styleClass="text-area-modern"/>
+                    <HBox spacing="12">
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Ticket Date" styleClass="field-label"/>
+                            <DatePicker fx:id="TicketDatePicker" maxWidth="Infinity" styleClass="date-picker-modern"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Payment Due Date" styleClass="field-label"/>
+                            <DatePicker fx:id="paymentDueDatePicker" maxWidth="Infinity" styleClass="date-picker-modern"/>
+                        </VBox>
+                    </HBox>
+                    <HBox spacing="12">
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Fine Amount (R)" styleClass="field-label"/>
+                            <TextField fx:id="fineField" promptText="0.00" styleClass="text-field-modern"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Location" styleClass="field-label"/>
+                            <TextField fx:id="locationField" promptText="Location" styleClass="text-field-modern"/>
+                        </VBox>
+                    </HBox>
+                    <HBox spacing="12">
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Officer" styleClass="field-label"/>
+                            <TextField fx:id="vOfficerField" promptText="Officer" styleClass="text-field-modern"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Status" styleClass="field-label"/>
+                            <ComboBox fx:id="TicketStatusCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Status"/>
+                        </VBox>
+                    </HBox>
+                    <Button fx:id="saveTicketBtn" text="🎫 Issue Ticket" maxWidth="Infinity" styleClass="btn-danger" onAction="#handleSaveTicket"/>
+                </VBox>
+                <VBox styleClass="form-card" spacing="10">
+                    <Label text="All Ticket Tickets" styleClass="section-title"/>
+                    <TableView fx:id="TicketsTable" prefHeight="340" styleClass="table-modern">
+                        <columns>
+                            <TableColumn fx:id="vIdCol"      text="ID"          prefWidth="50"/>
+                            <TableColumn fx:id="vRegCol"     text="Car"     prefWidth="120"/>
+                            <TableColumn fx:id="vTypeCol"    text="Ticket"   prefWidth="160"/>
+                            <TableColumn fx:id="vDateCol"    text="Date"        prefWidth="100"/>
+                            <TableColumn fx:id="vDueCol"     text="Due Date"    prefWidth="100"/>
+                            <TableColumn fx:id="vFineCol"    text="Fine (R)"    prefWidth="90"/>
+                            <TableColumn fx:id="vStatusCol"  text="Status"      prefWidth="80"/>
+                            <TableColumn fx:id="vLocCol"     text="Location"    prefWidth="150"/>
+                            <TableColumn fx:id="vOfficerCol" text="Officer"     prefWidth="130"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</VBox>

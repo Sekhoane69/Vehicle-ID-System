@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.*?>
+
+<VBox fx:id="ClientRoot" spacing="0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.vis.controller.ClientView"
+      styleClass="module-root">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="module-header">
+        <padding><Insets left="24" right="24" top="18" bottom="18"/></padding>
+        <VBox spacing="4">
+            <Label text="Client Module" styleClass="module-title"/>
+            <Label text="Client and Car ownership management" styleClass="module-subtitle"/>
+        </VBox>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <ProgressBar fx:id="loadProgress" prefWidth="160" prefHeight="8"/>
+        <ProgressIndicator fx:id="progressIndicator" prefWidth="28" prefHeight="28"/>
+    </HBox>
+
+    <Label fx:id="statusLabel" styleClass="status-label" visible="false">
+        <padding><Insets left="24" top="4" bottom="4"/></padding>
+    </Label>
+
+    <!-- ========== ADMIN / WORKSHOP VIEW ========== -->
+    <VBox fx:id="adminView" spacing="0" managed="true" visible="true" VBox.vgrow="ALWAYS">
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean" VBox.vgrow="ALWAYS">
+            <VBox spacing="20" styleClass="module-content">
+                <padding><Insets top="24" bottom="24" left="24" right="24"/></padding>
+                <!-- Charts -->
+                <HBox spacing="16">
+                    <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                        <Label text="Fleet Distribution by Year" styleClass="chart-title"/>
+                        <BarChart fx:id="CarsByYearChart" prefHeight="250" animated="true">
+                            <xAxis><CategoryAxis label="Year"/></xAxis>
+                            <yAxis><NumberAxis label="Count"/></yAxis>
+                        </BarChart>
+                    </VBox>
+                    <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                        <Label text="Fleet Distribution by Make" styleClass="chart-title"/>
+                        <BarChart fx:id="CarsByMakeChart" prefHeight="250" animated="true">
+                            <xAxis><CategoryAxis label="Make"/></xAxis>
+                            <yAxis><NumberAxis label="Count"/></yAxis>
+                        </BarChart>
+                    </VBox>
+                </HBox>
+                <!-- Add Client + Search -->
+                <HBox spacing="16">
+                    <VBox styleClass="form-card" spacing="10" HBox.hgrow="ALWAYS">
+                        <Label text="Add Client" styleClass="section-title"/>
+                        <Label text="Full Name" styleClass="field-label"/>
+                        <TextField fx:id="nameField" promptText="Full name" styleClass="text-field-modern"/>
+                        <Label text="Address" styleClass="field-label"/>
+                        <TextField fx:id="addressField" promptText="Street, City" styleClass="text-field-modern"/>
+                        <HBox spacing="10">
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Phone" styleClass="field-label"/>
+                                <TextField fx:id="phoneField" promptText="555-0000" styleClass="text-field-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Email" styleClass="field-label"/>
+                                <TextField fx:id="emailField" promptText="email@doStartApp.com" styleClass="text-field-modern"/>
+                            </VBox>
+                        </HBox>
+                        <Button fx:id="saveClientBtn" text="Save Client" maxWidth="Infinity" styleClass="btn-primary" onAction="#handleSaveClient"/>
+                    </VBox>
+                    <VBox styleClass="form-card" spacing="10" HBox.hgrow="ALWAYS">
+                        <Label text="Search Clients" styleClass="section-title"/>
+                        <HBox spacing="10">
+                            <TextField fx:id="searchField" promptText="Search by name, phone or email..." HBox.hgrow="ALWAYS" styleClass="text-field-modern"/>
+                            <Button text="Search" styleClass="btn-secondary" onAction="#handleSearch"/>
+                        </HBox>
+                        <ListView fx:id="ClientListView" prefHeight="220" styleClass="list-view-modern"/>
+                    </VBox>
+                </HBox>
+                <!-- All Clients scroll -->
+                <VBox styleClass="form-card" spacing="10">
+                    <Label text="All Clients" styleClass="section-title"/>
+                    <ScrollPane fx:id="ClientScrollPane" fitToWidth="true" prefHeight="200" styleClass="scroll-pane-clean">
+                        <VBox fx:id="ClientItemsBox" spacing="6">
+                            <padding><Insets top="8" bottom="8" left="8" right="8"/></padding>
+                        </VBox>
+                    </ScrollPane>
+                    <Pagination fx:id="ClientPagination" pageCount="1" styleClass="pagination-modern"/>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+
+    <!-- ========== Client SELF-SERVICE VIEW (TabPane) ========== -->
+    <VBox fx:id="ClientView" spacing="0" managed="false" visible="false" VBox.vgrow="ALWAYS">
+        <TabPane tabClosingPolicy="UNAVAILABLE" styleClass="admin-tab-pane" VBox.vgrow="ALWAYS">
+
+            <!-- MY CarS TAB -->
+            <Tab text="🚗 My Cars">
+                <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean">
+                    <VBox spacing="16" styleClass="module-content">
+                        <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+                        <VBox styleClass="form-card" spacing="10">
+                            <Label text="My Registered Cars" styleClass="section-title"/>
+                            <Label text="Click a Car to see its full details, service history, and Tickets." styleClass="module-subtitle"/>
+                            <ListView fx:id="myCarsListView" prefHeight="220" styleClass="list-view-modern"/>
+                        </VBox>
+
+                        <!-- Car Detail Panel (shown on click) -->
+                        <VBox fx:id="CarDetailPanel" managed="false" visible="false" styleClass="form-card" spacing="12">
+                            <Label fx:id="CarDetailTitle" text="Car Details" styleClass="section-title"/>
+                            <HBox spacing="20">
+                                <VBox HBox.hgrow="ALWAYS" spacing="6">
+                                    <Label text="Registration" styleClass="field-label"/>
+                                    <Label fx:id="detailReg" text="—" styleClass="module-subtitle"/>
+                                    <Label text="Make / Model" styleClass="field-label"/>
+                                    <Label fx:id="detailMakeModel" text="—" styleClass="module-subtitle"/>
+                                    <Label text="Year" styleClass="field-label"/>
+                                    <Label fx:id="detailYear" text="—" styleClass="module-subtitle"/>
+                                    <Label text="Color" styleClass="field-label"/>
+                                    <Label fx:id="detailColor" text="—" styleClass="module-subtitle"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS" spacing="6">
+                                    <Label text="Tickets on this Car" styleClass="field-label"/>
+                                    <ListView fx:id="CarTicketsListView" prefHeight="160" styleClass="list-view-modern"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Add Problem / Service Request -->
+                        <VBox fx:id="serviceProblemPanel" managed="false" visible="false" styleClass="form-card" spacing="10">
+                            <Label text="Report a Problem / Request Service" styleClass="section-title"/>
+                            <Label text="Problem Type" styleClass="field-label"/>
+                            <ComboBox fx:id="problemTypeCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Select type"/>
+                            <Label text="Description" styleClass="field-label"/>
+                            <TextArea fx:id="problemDescArea" promptText="Describe the issue with your Car..." prefHeight="90" styleClass="text-area-modern"/>
+                            <Button text="Submit Problem Report" styleClass="btn-primary" onAction="#handleSubmitProblem"/>
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- SELL / TRANSFER TAB -->
+            <Tab text="💰 Sell Car">
+                <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean">
+                    <VBox spacing="16" styleClass="module-content">
+                        <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+                        <VBox styleClass="form-card" spacing="10">
+                            <Label text="Sell or Transfer Ownership" styleClass="section-title"/>
+                            <Label text="Select Car to Sell" styleClass="field-label"/>
+                            <ComboBox fx:id="myCarsCombo" promptText="Select a Car" maxWidth="Infinity" styleClass="combo-modern"/>
+                            <Label text="Buyer Email (Leave empty for Public Sale — any Client can buy)" styleClass="field-label"/>
+                            <TextField fx:id="buyerEmailField" promptText="buyer@email.com (Optional)" styleClass="text-field-modern"/>
+                            <Button text="📢 List for Sale / Send Offer" styleClass="btn-primary" onAction="#handleSellCar"/>
+                        </VBox>
+                        <VBox styleClass="form-card" spacing="10">
+                            <Label text="Incoming Car Offers" styleClass="section-title"/>
+                            <ListView fx:id="incomingOffersListView" prefHeight="200" styleClass="list-view-modern"/>
+                            <Button text="✅ Accept Selected Offer" styleClass="btn-success" onAction="#handleAcceptOffer"/>
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- REPORT STOLEN TAB -->
+            <Tab text="🚨 Report Stolen">
+                <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean">
+                    <VBox spacing="16" styleClass="module-content">
+                        <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+                        <VBox styleClass="form-card" spacing="12">
+                            <Label text="Report a Stolen Car to Police" styleClass="section-title"/>
+                            <Label text="This will create an official THEFT police report. Please provide as much detail as possible." wrapText="true" styleClass="module-subtitle"/>
+                            <Label text="Select Car" styleClass="field-label"/>
+                            <ComboBox fx:id="stolenCarCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Choose your Car"/>
+                            <Label text="Last Known Location" styleClass="field-label"/>
+                            <TextField fx:id="stolenLocationField" promptText="e.g. Corner StartApp &amp; Park St, City" styleClass="text-field-modern"/>
+                            <Label text="Incident Description" styleClass="field-label"/>
+                            <TextArea fx:id="stolenDescArea" promptText="When was it stolen? Any witnesses? Any details that may help..." prefHeight="100" styleClass="text-area-modern"/>
+                            <Button text="🚨 Submit Theft Report to Police" styleClass="btn-danger" onAction="#handleReportStolen"/>
+                        </VBox>
+                        <!-- Previous theft reports for this Client -->
+                        <VBox styleClass="form-card" spacing="10">
+                            <Label text="My Theft / Police Reports" styleClass="section-title"/>
+                            <ListView fx:id="myPoliceReportsListView" prefHeight="200" styleClass="list-view-modern"/>
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- INSURANCE TAB -->
+            <Tab text="🛡 Insurance">
+                <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean">
+                    <VBox spacing="16" styleClass="module-content">
+                        <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+                        <VBox styleClass="form-card" spacing="12">
+                            <Label text="Register Car with Insurance Company" styleClass="section-title"/>
+                            <Label text="Select Car" styleClass="field-label"/>
+                            <ComboBox fx:id="insCarCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Choose your Car"/>
+                            <HBox spacing="12">
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="Insurance Provider" styleClass="field-label"/>
+                                    <TextField fx:id="insProviderField" promptText="e.g. Outsurance" styleClass="text-field-modern"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="Policy Number" styleClass="field-label"/>
+                                    <TextField fx:id="insPolicyField" promptText="POL-000001" styleClass="text-field-modern"/>
+                                </VBox>
+                            </HBox>
+                            <HBox spacing="12">
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="Start Date" styleClass="field-label"/>
+                                    <DatePicker fx:id="insStartDate" maxWidth="Infinity" styleClass="date-picker-modern"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="Expiry Date" styleClass="field-label"/>
+                                    <DatePicker fx:id="insExpiryDate" maxWidth="Infinity" styleClass="date-picker-modern"/>
+                                </VBox>
+                            </HBox>
+                            <HBox spacing="12">
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="Monthly Premium (R)" styleClass="field-label"/>
+                                    <TextField fx:id="insPremiumField" promptText="0.00" styleClass="text-field-modern"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                    <Label text="Coverage Type" styleClass="field-label"/>
+                                    <ComboBox fx:id="insCoverageCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Select coverage"/>
+                                </VBox>
+                            </HBox>
+                            <Button text="🛡 Register Insurance Policy" styleClass="btn-primary" onAction="#handleRegisterInsurance"/>
+                        </VBox>
+                        <!-- My policies list -->
+                        <VBox styleClass="form-card" spacing="10">
+                            <Label text="My Insurance Policies" styleClass="section-title"/>
+                            <ListView fx:id="myInsuranceListView" prefHeight="200" styleClass="list-view-modern"/>
+                        </VBox>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+        </TabPane>
+    </VBox>
+
+</VBox>

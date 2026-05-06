@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<VBox fx:id="profileRoot" spacing="0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.vis.controller.Profile"
+      styleClass="module-root">
+
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="module-header">
+        <padding><Insets left="24" right="24" top="18" bottom="18"/></padding>
+        <VBox spacing="4">
+            <Label text="👤 My Profile" styleClass="module-title"/>
+            <Label text="View and update your personal account information" styleClass="module-subtitle"/>
+        </VBox>
+    </HBox>
+
+    <Label fx:id="statusLabel" styleClass="status-label" visible="false">
+        <padding><Insets left="24" top="4" bottom="4"/></padding>
+    </Label>
+
+    <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean" VBox.vgrow="ALWAYS">
+        <VBox spacing="20" styleClass="module-content">
+            <padding><Insets top="24" bottom="24" left="24" right="24"/></padding>
+
+            <HBox spacing="20">
+                <!-- Profile Summary Card -->
+                <VBox styleClass="form-card" prefWidth="300" spacing="16" alignment="TOP_CENTER">
+                    <VBox alignment="CENTER" spacing="8" style="-fx-padding: 0 0 10 0;">
+                        <Label text="👤" style="-fx-font-size: 64px; -fx-text-fill: #2563eb;"/>
+                        <Label fx:id="personnameFieldDisplay" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+                        <Label fx:id="roleLabel" styleClass="topbar-role"/>
+                    </VBox>
+                    <Separator/>
+                    <VBox spacing="4" alignment="CENTER_LEFT">
+                        <Label fx:id="joinDateLabel" styleClass="module-subtitle"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Edit Profile Form -->
+                <VBox styleClass="form-card" HBox.hgrow="ALWAYS" spacing="16">
+                    <Label text="Account Settings" styleClass="section-title"/>
+                    
+                    <VBox spacing="4">
+                        <Label text="Personname (Immutable)" styleClass="field-label"/>
+                        <TextField fx:id="personnameField" editable="false" styleClass="text-field-modern" opacity="0.7"/>
+                    </VBox>
+
+                    <VBox spacing="4">
+                        <Label text="Email Address" styleClass="field-label"/>
+                        <TextField fx:id="emailField" promptText="Enter your email" styleClass="text-field-modern"/>
+                    </VBox>
+
+                    <Separator/>
+                    <Label text="Security" styleClass="section-title" style="-fx-padding: 8 0 0 0;"/>
+                    <Label text="Leave blank if you don't want to change your password" styleClass="module-subtitle"/>
+
+                    <HBox spacing="12">
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="New Password" styleClass="field-label"/>
+                            <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="text-field-modern"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Confirm New Password" styleClass="field-label"/>
+                            <PasswordField fx:id="confirmPasswordField" promptText="••••••••" styleClass="text-field-modern"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+                        <Button text="💾 Save Changes" styleClass="btn-primary" onAction="#handleUpdateProfile" prefWidth="180"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </VBox>
+    </ScrollPane>
+</VBox>

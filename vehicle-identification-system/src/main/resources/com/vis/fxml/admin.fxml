@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.*?>
+
+<VBox fx:id="adminRoot" spacing="0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.vis.controller.Admin"
+      styleClass="module-root">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="module-header">
+        <padding><Insets left="24" right="24" top="18" bottom="18"/></padding>
+        <VBox spacing="4">
+            <Label fx:id="adminWelcomeLabel" text="Admin Panel" styleClass="module-title"/>
+            <Label text="Full system control — Persons, Clients &amp; Cars" styleClass="module-subtitle"/>
+        </VBox>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <ProgressBar fx:id="loadProgress" prefWidth="160" prefHeight="8"/>
+    </HBox>
+
+    <Label fx:id="statusLabel" styleClass="status-label" visible="false">
+        <padding><Insets left="24" top="4" bottom="4"/></padding>
+    </Label>
+
+    <!-- Tab Pane -->
+    <TabPane VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE" styleClass="admin-tab-pane">
+
+        <!-- ===== PersonS TAB ===== -->
+        <Tab text="👤 Persons">
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean">
+                <VBox spacing="16" styleClass="module-content">
+                    <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+
+                    <!-- Person Form -->
+                    <VBox styleClass="form-card" spacing="10">
+                        <Label text="Create / Edit Person" styleClass="section-title"/>
+                        <HBox spacing="12">
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Personname" styleClass="field-label"/>
+                                <TextField fx:id="newpersonnameField" promptText="Personname" styleClass="text-field-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Email" styleClass="field-label"/>
+                                <TextField fx:id="newEmailField" promptText="Person@email.com" styleClass="text-field-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Password (leave blank to keep)" styleClass="field-label"/>
+                                <PasswordField fx:id="newPasswordField" promptText="Password" styleClass="text-field-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Role" styleClass="field-label"/>
+                                <ComboBox fx:id="newRoleCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Select role"/>
+                            </VBox>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Button fx:id="createPersonBtn" text="➕ Create Person" styleClass="btn-primary" onAction="#handleCreatePerson"/>
+                            <Button fx:id="updatePersonBtn" text="✏️ Update Selected" styleClass="btn-secondary" onAction="#handleUpdatePerson"/>
+                            <Button fx:id="deletePersonBtn" text="🗑 Delete Selected" styleClass="btn-danger" onAction="#handleDeletePerson"/>
+                            <Button fx:id="togglePersonBtn" text="⏺ Toggle Active" styleClass="btn-secondary" onAction="#handleTogglePerson"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Persons Table -->
+                    <VBox styleClass="form-card" spacing="10" VBox.vgrow="ALWAYS">
+                        <Label text="All System Persons" styleClass="section-title"/>
+                        <TableView fx:id="PersonsTable" VBox.vgrow="ALWAYS" prefHeight="400" styleClass="table-modern">
+                            <columns>
+                                <TableColumn fx:id="PersonIdCol"       text="ID"       prefWidth="50"/>
+                                <TableColumn fx:id="personnameCol"     text="Personname" prefWidth="150"/>
+                                <TableColumn fx:id="PersonEmailCol"    text="Email"    prefWidth="200"/>
+                                <TableColumn fx:id="PersonRoleCol"     text="Role"     prefWidth="120"/>
+                                <TableColumn fx:id="PersonActiveCol"   text="Active"   prefWidth="80"/>
+                                <TableColumn fx:id="PersonCreatedCol"  text="Created"  prefWidth="160"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <!-- ===== ClientS TAB ===== -->
+        <Tab text="🧑‍🤝‍🧑 Clients">
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean">
+                <VBox spacing="16" styleClass="module-content">
+                    <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+
+                    <!-- Client Form -->
+                    <VBox styleClass="form-card" spacing="10">
+                        <Label text="Create / Edit Client" styleClass="section-title"/>
+                        <HBox spacing="12">
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Full Name" styleClass="field-label"/>
+                                <TextField fx:id="custNameField" promptText="Full Name" styleClass="text-field-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Email" styleClass="field-label"/>
+                                <TextField fx:id="custEmailField" promptText="Client@email.com" styleClass="text-field-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Phone" styleClass="field-label"/>
+                                <TextField fx:id="custPhoneField" promptText="+27 82 000 0000" styleClass="text-field-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Address" styleClass="field-label"/>
+                                <TextField fx:id="custAddressField" promptText="Street, City" styleClass="text-field-modern"/>
+                            </VBox>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Button text="➕ Add Client"      styleClass="btn-primary"   onAction="#handleCreateClient"/>
+                            <Button text="✏️ Update Selected"   styleClass="btn-secondary"  onAction="#handleUpdateClient"/>
+                            <Button text="🗑 Delete Selected"   styleClass="btn-danger"     onAction="#handleDeleteClient"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Clients Table -->
+                    <VBox styleClass="form-card" spacing="10" VBox.vgrow="ALWAYS">
+                        <Label text="All Clients" styleClass="section-title"/>
+                        <TableView fx:id="ClientsTable" VBox.vgrow="ALWAYS" prefHeight="400" styleClass="table-modern">
+                            <columns>
+                                <TableColumn fx:id="custIdCol"      text="ID"       prefWidth="50"/>
+                                <TableColumn fx:id="custNameCol"    text="Name"     prefWidth="160"/>
+                                <TableColumn fx:id="custEmailCol"   text="Email"    prefWidth="200"/>
+                                <TableColumn fx:id="custPhoneCol"   text="Phone"    prefWidth="130"/>
+                                <TableColumn fx:id="custAddrCol"    text="Address"  prefWidth="200"/>
+                                <TableColumn fx:id="custCreatedCol" text="Created"  prefWidth="160"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <!-- ===== CarS TAB ===== -->
+        <Tab text="🚗 Cars">
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean">
+                <VBox spacing="16" styleClass="module-content">
+                    <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+
+                    <!-- Car Form -->
+                    <VBox styleClass="form-card" spacing="10">
+                        <Label text="Register / Edit Car" styleClass="section-title"/>
+                        <HBox spacing="12">
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Registration No." styleClass="field-label"/>
+                                <TextField fx:id="regField" promptText="ABC-1234" styleClass="text-field-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Make" styleClass="field-label"/>
+                                <TextField fx:id="makeField" promptText="Toyota" styleClass="text-field-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Model" styleClass="field-label"/>
+                                <TextField fx:id="modelField" promptText="Camry" styleClass="text-field-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Year" styleClass="field-label"/>
+                                <TextField fx:id="yearField" promptText="2023" styleClass="text-field-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Color" styleClass="field-label"/>
+                                <TextField fx:id="colorField" promptText="Silver" styleClass="text-field-modern"/>
+                            </VBox>
+                        </HBox>
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Assign to Client:" styleClass="field-label"/>
+                            <ComboBox fx:id="ownerCombo" prefWidth="250" styleClass="combo-modern" promptText="Select Client"/>
+                        </HBox>
+                        <HBox spacing="10">
+                            <Button fx:id="saveCarBtn"   text="➕ Register Car"  styleClass="btn-primary"   onAction="#handleSaveCar"/>
+                            <Button fx:id="updateCarBtn" text="✏️ Update Selected"    styleClass="btn-secondary"  onAction="#handleUpdateCar"/>
+                            <Button fx:id="deleteCarBtn" text="🗑 Delete Selected"    styleClass="btn-danger"     onAction="#handleDeleteCar"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Cars Table -->
+                    <VBox styleClass="form-card" spacing="10" VBox.vgrow="ALWAYS">
+                        <Label text="All Registered Cars" styleClass="section-title"/>
+                        <TableView fx:id="CarsTable" VBox.vgrow="ALWAYS" prefHeight="400" styleClass="table-modern">
+                            <columns>
+                                <TableColumn fx:id="vehIdCol"    text="ID"           prefWidth="50"/>
+                                <TableColumn fx:id="vehRegCol"   text="Reg. Number"  prefWidth="130"/>
+                                <TableColumn fx:id="vehMakeCol"  text="Make"         prefWidth="110"/>
+                                <TableColumn fx:id="vehModelCol" text="Model"        prefWidth="110"/>
+                                <TableColumn fx:id="vehYearCol"  text="Year"         prefWidth="70"/>
+                                <TableColumn fx:id="vehColorCol" text="Color"        prefWidth="90"/>
+                                <TableColumn fx:id="vehOwnerCol" text="Owner"        prefWidth="150"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <!-- ===== BROADCAST TAB ===== -->
+        <Tab text="📢 Broadcast">
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean">
+                <VBox spacing="16" styleClass="module-content">
+                    <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+                    
+                    <VBox styleClass="form-card" spacing="12">
+                        <Label text="New System Announcement" styleClass="section-title"/>
+                        <VBox spacing="6">
+                            <Label text="Message Content" styleClass="field-label"/>
+                            <TextArea fx:id="broadcastMessageArea" prefHeight="100" promptText="Enter the system-wide announcement here..." styleClass="text-area-modern"/>
+                        </VBox>
+                        <HBox spacing="16">
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Alert Type" styleClass="field-label"/>
+                                <ComboBox fx:id="broadcastTypeCombo" maxWidth="Infinity" styleClass="combo-modern"/>
+                            </VBox>
+                            <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                <Label text="Expires After" styleClass="field-label"/>
+                                <DatePicker fx:id="broadcastExpiryPicker" maxWidth="Infinity" styleClass="date-picker-modern"/>
+                            </VBox>
+                        </HBox>
+                        <Button text="🚀 Send Broadcast to Everyone" maxWidth="Infinity" styleClass="btn-primary" onAction="#handleSendBroadcast"/>
+                    </VBox>
+                    
+                    <VBox styleClass="form-card" spacing="10" VBox.vgrow="ALWAYS">
+                        <Label text="Recent Announcements" styleClass="section-title"/>
+                        <ListView fx:id="recentBroadcastsList" prefHeight="250" styleClass="list-view-modern"/>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <!-- ===== OVERVIEW / CHART TAB ===== -->
+        <Tab text="📊 Overview">
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean">
+                <VBox spacing="20" styleClass="module-content">
+                    <padding><Insets top="20" bottom="20" left="20" right="20"/></padding>
+                    <VBox styleClass="chart-card">
+                        <Label text="Persons by Role" styleClass="chart-title"/>
+                        <BarChart fx:id="PersonsByRoleChart" prefHeight="280" animated="true">
+                            <xAxis><CategoryAxis label="Role"/></xAxis>
+                            <yAxis><NumberAxis label="Count"/></yAxis>
+                        </BarChart>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+    </TabPane>
+</VBox>

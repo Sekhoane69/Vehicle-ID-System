@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.*?>
+
+<VBox fx:id="workshopRoot" spacing="0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.vis.controller.Garage"
+      styleClass="module-root">
+
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="module-header">
+        <padding><Insets left="24" right="24" top="18" bottom="18"/></padding>
+        <VBox spacing="4">
+            <Label text="Workshop Module" styleClass="module-title"/>
+            <Label text="Car registration and service management" styleClass="module-subtitle"/>
+        </VBox>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <ProgressBar fx:id="loadProgress" prefWidth="160" prefHeight="8"/>
+    </HBox>
+
+    <Label fx:id="statusLabel" styleClass="status-label" visible="false">
+        <padding><Insets left="24" top="4" bottom="4"/></padding>
+    </Label>
+
+    <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean" VBox.vgrow="ALWAYS">
+        <VBox spacing="20" styleClass="module-content">
+            <padding><Insets top="24" bottom="24" left="24" right="24"/></padding>
+
+            <!-- Stat Cards -->
+            <HBox fx:id="statsSection" spacing="16">
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Cars in Workshop" styleClass="stat-label"/>
+                    <Label fx:id="inWorkshopLabel" text="0" styleClass="stat-value"/>
+                </VBox>
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Serviced (Total)" styleClass="stat-label"/>
+                    <Label fx:id="servicedTotalLabel" text="0" styleClass="stat-value"/>
+                </VBox>
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Pending Services" styleClass="stat-label"/>
+                    <Label fx:id="pendingServicesLabel" text="0" styleClass="stat-value"/>
+                </VBox>
+            </HBox>
+
+            <!-- Charts Row -->
+            <HBox fx:id="chartsSection" spacing="16">
+                <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                    <Label text="Service Types Distribution" styleClass="chart-title"/>
+                    <PieChart fx:id="serviceTypePieChart" prefHeight="200" animated="true" labelsVisible="true"/>
+                </VBox>
+                <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                    <Label text="Monthly Service Cost (R)" styleClass="chart-title"/>
+                    <BarChart fx:id="costBarChart" prefHeight="200" animated="true">
+                        <xAxis><CategoryAxis label="Month"/></xAxis>
+                        <yAxis><NumberAxis label="Cost"/></yAxis>
+                    </BarChart>
+                </VBox>
+            </HBox>
+
+            <!-- Forms Row -->
+            <HBox spacing="16">
+
+
+                <!-- Add Service Record -->
+                <VBox fx:id="addRecordSection" styleClass="form-card" spacing="10" HBox.hgrow="ALWAYS">
+                    <Label text="Add Service Record" styleClass="section-title"/>
+                    <Label text="Car" styleClass="field-label"/>
+                    <ComboBox fx:id="CarCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Select Car"/>
+                    <HBox spacing="10">
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Service Date" styleClass="field-label"/>
+                            <DatePicker fx:id="serviceDatePicker" maxWidth="Infinity" styleClass="date-picker-modern"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Service Type" styleClass="field-label"/>
+                            <ComboBox fx:id="serviceTypeCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Type"/>
+                        </VBox>
+                    </HBox>
+                    <Label text="Description" styleClass="field-label"/>
+                    <TextArea fx:id="descriptionArea" promptText="Service details..." prefHeight="70" styleClass="text-area-modern"/>
+                    <HBox spacing="10">
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Cost (R)" styleClass="field-label"/>
+                            <TextField fx:id="costField" promptText="0.00" styleClass="text-field-modern"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Technician" styleClass="field-label"/>
+                            <TextField fx:id="technicianField" promptText="Name" styleClass="text-field-modern"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS" spacing="4">
+                            <Label text="Status" styleClass="field-label"/>
+                            <ComboBox fx:id="statusCombo" maxWidth="Infinity" styleClass="combo-modern"/>
+                        </VBox>
+                    </HBox>
+                    <Button fx:id="saveServiceBtn" text="Save Service Record" maxWidth="Infinity" styleClass="btn-success" onAction="#handleSaveService"/>
+                </VBox>
+            </HBox>
+
+            <!-- Search & List -->
+            <VBox fx:id="searchSection" styleClass="form-card" spacing="10">
+                <Label text="Car Search" styleClass="section-title"/>
+                <HBox spacing="10">
+                    <TextField fx:id="searchField" promptText="Search by plate, make, model or owner..." HBox.hgrow="ALWAYS" styleClass="text-field-modern"/>
+                    <Button text="Search" styleClass="btn-secondary" onAction="#handleSearch"/>
+                </HBox>
+                <ListView fx:id="CarListView" prefHeight="160" styleClass="list-view-modern"/>
+            </VBox>
+
+            <!-- Service Records Table -->
+            <VBox fx:id="registrySection" styleClass="form-card" spacing="10" VBox.vgrow="ALWAYS">
+                <Label text="Service Registry" styleClass="section-title"/>
+                <TableView fx:id="serviceTable" prefHeight="350" styleClass="table-modern" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idCol"       text="ID"           prefWidth="50"/>
+                        <TableColumn fx:id="regCol"      text="Car"      prefWidth="110"/>
+                        <TableColumn fx:id="dateCol"     text="Date"          prefWidth="100"/>
+                        <TableColumn fx:id="typeCol"     text="Type"          prefWidth="120"/>
+                        <TableColumn fx:id="techCol"     text="Technician"    prefWidth="130"/>
+                        <TableColumn fx:id="costCol"     text="Cost (R)"      prefWidth="90"/>
+                        <TableColumn fx:id="statusCol"   text="Status"        prefWidth="100"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+</VBox>

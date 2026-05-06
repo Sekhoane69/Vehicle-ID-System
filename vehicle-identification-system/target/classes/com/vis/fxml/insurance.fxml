@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.*?>
+
+<VBox fx:id="insuranceRoot" spacing="0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.vis.controller.Insurance"
+      styleClass="module-root">
+
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="module-header">
+        <padding><Insets left="24" right="24" top="18" bottom="18"/></padding>
+        <VBox spacing="4">
+            <Label text="Insurance Module" styleClass="module-title"/>
+            <Label text="Car insurance policies and tracking" styleClass="module-subtitle"/>
+        </VBox>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <ProgressBar fx:id="loadProgress" prefWidth="160" prefHeight="8"/>
+    </HBox>
+
+    <Label fx:id="statusLabel" styleClass="status-label" visible="false">
+        <padding><Insets left="24" top="4" bottom="4"/></padding>
+    </Label>
+
+    <ScrollPane fitToWidth="true" styleClass="scroll-pane-clean" VBox.vgrow="ALWAYS">
+        <VBox spacing="20" styleClass="module-content">
+            <padding><Insets top="24" bottom="24" left="24" right="24"/></padding>
+
+            <!-- Stat Cards -->
+            <HBox fx:id="statsSection" spacing="16">
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Total Insured Clients" styleClass="stat-label"/>
+                    <Label fx:id="totalInsuredClientsLabel" text="—" styleClass="stat-value"/>
+                </VBox>
+                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                    <Label text="Total Insured Cars" styleClass="stat-label"/>
+                    <Label fx:id="totalInsuredCarsLabel" text="—" styleClass="stat-value"/>
+                </VBox>
+            </HBox>
+
+            <!-- Charts -->
+            <HBox fx:id="chartsSection" spacing="16">
+                <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                    <Label text="Policies by Provider" styleClass="chart-title"/>
+                    <PieChart fx:id="providerPieChart" prefHeight="240" animated="true" labelsVisible="true"/>
+                </VBox>
+                <VBox styleClass="chart-card" HBox.hgrow="ALWAYS">
+                    <Label text="Policy Status Overview" styleClass="chart-title"/>
+                    <PieChart fx:id="statusPieChart" prefHeight="240" animated="true" labelsVisible="true"/>
+                </VBox>
+            </HBox>
+
+            <!-- Form -->
+            <VBox fx:id="formSection" styleClass="form-card" spacing="12">
+                <Label text="Add Insurance Policy" styleClass="section-title"/>
+                <GridPane hgap="16" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="33"/>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="33"/>
+                        <ColumnConstraints hgrow="ALWAYS" percentWidth="34"/>
+                    </columnConstraints>
+                    <Label text="Car" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <ComboBox fx:id="CarCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Select Car" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label text="Insurance Company" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                    <ComboBox fx:id="providerCombo" maxWidth="Infinity" styleClass="combo-modern" promptText="Select Provider" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    <Label text="Policy Number" styleClass="field-label" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                    <TextField fx:id="policyNumberField" promptText="e.g. AS-001234" styleClass="text-field-modern" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                    <Label text="Start Date" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <DatePicker fx:id="startDatePicker" maxWidth="Infinity" styleClass="date-picker-modern" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <Label text="Expiry Date" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                    <DatePicker fx:id="expiryDatePicker" maxWidth="Infinity" styleClass="date-picker-modern" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    <Label text="Premium Amount (R)" styleClass="field-label" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                    <TextField fx:id="premiumField" promptText="0.00" styleClass="text-field-modern" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+                    <Label text="Coverage Type" styleClass="field-label" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <ComboBox fx:id="coverageTypeCombo" maxWidth="Infinity" styleClass="combo-modern" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                    <Label text="Status" styleClass="field-label" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                    <ComboBox fx:id="statusCombo" maxWidth="Infinity" styleClass="combo-modern" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                </GridPane>
+                <Button fx:id="saveInsuranceBtn" text="Save Insurance Policy" maxWidth="Infinity" styleClass="btn-primary" onAction="#handleSaveInsurance"/>
+            </VBox>
+
+            <VBox fx:id="registrySection" styleClass="form-card" spacing="10" VBox.vgrow="ALWAYS">
+                <Label text="Insurance Policies Registry" styleClass="section-title"/>
+                <TableView fx:id="insuranceTable" prefHeight="400" styleClass="table-modern" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idCol"       text="ID"           prefWidth="50"/>
+                        <TableColumn fx:id="regCol"      text="Car"      prefWidth="120"/>
+                        <TableColumn fx:id="providerCol" text="Company"      prefWidth="130"/>
+                        <TableColumn fx:id="policyCol"   text="Policy #"     prefWidth="130"/>
+                        <TableColumn fx:id="startCol"    text="Start Date"   prefWidth="100"/>
+                        <TableColumn fx:id="expiryCol"   text="Expiry Date"  prefWidth="100"/>
+                        <TableColumn fx:id="premiumCol"  text="Premium (R)"  prefWidth="90"/>
+                        <TableColumn fx:id="coverageCol" text="Coverage"     prefWidth="110"/>
+                        <TableColumn fx:id="statusCol"   text="Status"       prefWidth="80"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+</VBox>

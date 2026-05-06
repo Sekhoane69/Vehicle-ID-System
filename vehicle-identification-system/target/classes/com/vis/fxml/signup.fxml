@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.vis.controller.Signup"
+           styleClass="login-root">
+
+    <VBox fx:id="registerCard" alignment="CENTER" spacing="14" maxWidth="440" maxHeight="620" styleClass="card">
+        <padding><Insets top="36" bottom="36" left="40" right="40"/></padding>
+
+        <VBox alignment="CENTER" spacing="4">
+            <Label text="Create Account" styleClass="login-title"/>
+            <Label text="Register to access the system" styleClass="login-subtitle"/>
+        </VBox>
+
+        <Separator styleClass="divider"/>
+
+        <VBox spacing="9">
+            <Label text="Personname" styleClass="field-label"/>
+            <TextField fx:id="personnameField" promptText="Choose a Personname" styleClass="text-field-modern"/>
+
+            <Label text="Email" styleClass="field-label"/>
+            <TextField fx:id="emailField" promptText="your@email.com" styleClass="text-field-modern"/>
+
+            <Label text="Password" styleClass="field-label"/>
+            <PasswordField fx:id="passwordField" promptText="Min. 6 characters" styleClass="text-field-modern"/>
+
+            <Label text="Confirm Password" styleClass="field-label"/>
+            <PasswordField fx:id="confirmPasswordField" promptText="Re-enter password" styleClass="text-field-modern"/>
+
+            <Label text="Role" styleClass="field-label"/>
+            <ComboBox fx:id="roleCombo" maxWidth="Infinity" styleClass="combo-modern"/>
+        </VBox>
+
+        <Label fx:id="statusLabel" wrapText="true" maxWidth="360" styleClass="status-label" visible="false"/>
+        <ProgressIndicator fx:id="loadingIndicator" prefWidth="30" prefHeight="30"/>
+
+        <VBox spacing="10">
+            <Button fx:id="registerBtn" text="Create Account" maxWidth="Infinity" styleClass="btn-primary" onAction="#handleRegister"/>
+            <Button fx:id="backBtn" text="Back to Login" maxWidth="Infinity" styleClass="btn-ghost" onAction="#handleBack"/>
+        </VBox>
+    </VBox>
+</StackPane>
